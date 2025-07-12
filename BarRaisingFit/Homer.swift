@@ -16,41 +16,89 @@ struct Homer: View {
     @State private var timer: Timer?
     @State private var player: AVAudioPlayer?
     @State private var isPaused = false
-    @State private var pausedTime: Int = 0
 
     var body: some View {
-        ZStack {
-            Color("Teal1")
-                .ignoresSafeArea()
+        NavigationView {
+            ZStack {
+                Color("Teal1")
+                    .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                // Title
-                Text("BarRaisingFitnessApp")
-                    .font(.largeTitle)
-                    .bold()
+                VStack(spacing: 20) {
+                    // Title
+                    Text("BarRaisingFitnessApp")
+                        .font(.largeTitle)
+                        .bold()
+                        .foregroundColor(.white)
+                        .padding(.top)
+
+                    // Image
+                    Image("Some")
+                        .resizable()
+                        .frame(width: 200, height: 200)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+
+                    // Start Workout Button
+                    Button {
+                        showTimerOptions.toggle()
+                    } label: {
+                        Text("Start Workout")
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(.ultraThinMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                            .shadow(radius: 4)
+                    }
+                    .padding(.horizontal)
                     .foregroundColor(.white)
-                    .padding(.top)
 
-                // Image
-                Image("Some")
-                    .resizable()
-                    .frame(width: 200, height: 200)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    Spacer()
 
-                // Start Workout Button
-                Button {
-                    showTimerOptions.toggle()
-                } label: {
-                    Text("Start Workout")
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 15))
-                        .shadow(radius: 4)
+                    // Navigation Buttons as NavigationLinks
+                    VStack(spacing: 10) {
+                        NavigationLink(destination: Workouts()) {
+                            Text("Workouts")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 15))
+                                .shadow(radius: 3)
+                                .foregroundColor(.white)
+                        }
+                        NavigationLink(destination: GrindHouseChallenges()) {
+                            Text("GrindHouse Challenges")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 15))
+                                .shadow(radius: 3)
+                                .foregroundColor(.white)
+                        }
+                        NavigationLink(destination: Leaderboards()) {
+                            Text("Leaderboards")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 15))
+                                .shadow(radius: 3)
+                                .foregroundColor(.white)
+                        }
+                        NavigationLink(destination: Profile()) {
+                            Text("Profile")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 15))
+                                .shadow(radius: 3)
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
-                .foregroundColor(.white)
 
                 // Countdown Timer Display with Pause/Resume and Reset
                 if timerRunning {
@@ -87,55 +135,36 @@ struct Homer: View {
 
                 Spacer()
 
-                // Navigation Buttons
-                VStack(spacing: 10) {
-                    ForEach(["Workouts", "GrindHouse Challenges", "Leaderboard", "Profile"], id: \.self) { label in
-                        Button {
-                            print("\(label) tapped")
-                        } label: {
-                            Text(label)
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(.ultraThinMaterial)
-                                .clipShape(RoundedRectangle(cornerRadius: 15))
-                                .shadow(radius: 3)
-                                .foregroundColor(.white)
+                // Timer Options Pop-Up
+                if showTimerOptions {
+                    VStack(spacing: 15) {
+                        Text("Select Duration")
+                            .font(.title2)
+                            .bold()
+                            .foregroundColor(.white)
+
+                        ForEach([30, 45, 60], id: \.self) { sec in
+                            Button("\(sec) Seconds") {
+                                startCountdown(sec)
+                                showTimerOptions = false
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(.ultraThinMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .foregroundColor(.white)
                         }
-                    }
-                }
-                .padding(.horizontal)
-            }
 
-            // Timer Options Pop-Up
-            if showTimerOptions {
-                VStack(spacing: 15) {
-                    Text("Select Duration")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.white)
-
-                    ForEach([30, 45, 60], id: \.self) { sec in
-                        Button("\(sec) Seconds") {
-                            startCountdown(sec)
+                        Button("Cancel") {
                             showTimerOptions = false
                         }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundColor(.white)
+                        .foregroundColor(.red)
                     }
-
-                    Button("Cancel") {
-                        showTimerOptions = false
-                    }
-                    .foregroundColor(.red)
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(20)
+                    .padding(30)
                 }
-                .padding()
-                .background(.ultraThinMaterial)
-                .cornerRadius(20)
-                .padding(30)
             }
         }
     }
@@ -191,8 +220,5 @@ struct Homer: View {
 
 #Preview {
     Homer()
-}
-
-#Preview {
-    Homer()
+        .environmentObject(UserProfileViewModel())
 }

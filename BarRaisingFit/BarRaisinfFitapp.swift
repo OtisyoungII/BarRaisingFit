@@ -8,15 +8,14 @@
 import SwiftUI
 
 @main
-struct YourApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
-    @StateObject private var auth = AuthViewModel()
+struct BarRaisinfFitapp: App {
+//    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @StateObject private var profileVM = UserProfileViewModel()
 
     var body: some Scene {
         WindowGroup {
-            Homer() // Your SwiftUI root view
-                .environmentObject(auth)
+            Homer()
+                .environmentObject(profileVM)
         }
     }
 }
