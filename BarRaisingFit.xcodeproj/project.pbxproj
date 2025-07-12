@@ -6,8 +6,26 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B3EA368F2E22B05200168C84 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = B3EA368E2E22B05200168C84 /* Auth0 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B3EA36A62E22B65600168C84 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		B325A1F12D043F3E0080BDBA /* BarRaisingFit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BarRaisingFit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3EA36962E22B65600168C84 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,6 +47,11 @@
 			path = BarRaisingFit;
 			sourceTree = "<group>";
 		};
+		B3EA36982E22B65600168C84 /* Auth0 */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Auth0;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3EA368F2E22B05200168C84 /* Auth0 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +70,8 @@
 			isa = PBXGroup;
 			children = (
 				B325A1F32D043F3E0080BDBA /* BarRaisingFit */,
+				B3EA36982E22B65600168C84 /* Auth0 */,
+				B3EA36952E22B65500168C84 /* Frameworks */,
 				B325A1F22D043F3E0080BDBA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,6 +84,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		B3EA36952E22B65500168C84 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B3EA36962E22B65600168C84 /* AuthenticationServices.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -68,6 +102,7 @@
 				B325A1ED2D043F3E0080BDBA /* Sources */,
 				B325A1EE2D043F3E0080BDBA /* Frameworks */,
 				B325A1EF2D043F3E0080BDBA /* Resources */,
+				B3EA36A62E22B65600168C84 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -78,6 +113,7 @@
 			);
 			name = BarRaisingFit;
 			packageProductDependencies = (
+				B3EA368E2E22B05200168C84 /* Auth0 */,
 			);
 			productName = BarRaisingFit;
 			productReference = B325A1F12D043F3E0080BDBA /* BarRaisingFit.app */;
@@ -90,7 +126,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					B325A1F02D043F3E0080BDBA = {
@@ -107,6 +143,9 @@
 			);
 			mainGroup = B325A1E82D043F3E0080BDBA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B3EA368D2E22B05200168C84 /* XCRemoteSwiftPackageReference "Auth0" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B325A1F22D043F3E0080BDBA /* Products */;
 			projectDirPath = "";
@@ -143,6 +182,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BarRaisingFit/BarRaisingFit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -157,7 +197,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.APLDEVO.BarRaisingFit;
+				PRODUCT_BUNDLE_IDENTIFIER = BaRaisingFit.com.APLDEVO.BarRaisingFit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -170,6 +210,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BarRaisingFit/BarRaisingFit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -184,7 +225,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.APLDEVO.BarRaisingFit;
+				PRODUCT_BUNDLE_IDENTIFIER = BaRaisingFit.com.APLDEVO.BarRaisingFit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -335,6 +376,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B3EA368D2E22B05200168C84 /* XCRemoteSwiftPackageReference "Auth0" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/auth0/Auth0.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.13.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B3EA368E2E22B05200168C84 /* Auth0 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3EA368D2E22B05200168C84 /* XCRemoteSwiftPackageReference "Auth0" */;
+			productName = Auth0;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B325A1E92D043F3E0080BDBA /* Project object */;
 }

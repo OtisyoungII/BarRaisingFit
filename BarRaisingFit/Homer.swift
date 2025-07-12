@@ -20,7 +20,8 @@ struct Homer: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            Color("Teal1")
+                .ignoresSafeArea()
 
             VStack(spacing: 20) {
                 // Title
@@ -88,7 +89,7 @@ struct Homer: View {
 
                 // Navigation Buttons
                 VStack(spacing: 10) {
-                    ForEach(["Workouts", "Challenges", "Leaderboard", "Profile"], id: \.self) { label in
+                    ForEach(["Workouts", "GrindHouse Challenges", "Leaderboard", "Profile"], id: \.self) { label in
                         Button {
                             print("\(label) tapped")
                         } label: {

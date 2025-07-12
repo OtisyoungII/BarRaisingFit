@@ -6,19 +6,19 @@
 //
 
 import UIKit
+import SwiftUI
 
-    class ViewController: UIViewController {
-        override func viewDidLoad() {
-            view.backgroundColor = .link
-        }
+class ViewController: UIViewController {
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .link
+    }
+
+    @IBAction func didTapButton() {
+        let homerView = Homer()
+        let hostingController = UIHostingController(rootView: homerView)
         
-        @IBAction func didTapButton() {
-         guard   let vc = storyboard?.instantiateViewController(identifier: "second") as? SecondViewController else {
-                print("failed to get vc from storyboard")
-             return
-            }
-            
-            present(vc, animated: true)
-        }
-        
+        hostingController.modalPresentationStyle = .fullScreen
+        present(hostingController, animated: true, completion: nil)
+    }
 }
