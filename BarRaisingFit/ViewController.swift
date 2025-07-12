@@ -7,13 +7,18 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-
-
+    class ViewController: UIViewController {
+        override func viewDidLoad() {
+            view.backgroundColor = .link
+        }
+        
+        @IBAction func didTapButton() {
+         guard   let vc = storyboard?.instantiateViewController(identifier: "second") as? SecondViewController else {
+                print("failed to get vc from storyboard")
+             return
+            }
+            
+            present(vc, animated: true)
+        }
+        
 }
-
