@@ -5,6 +5,7 @@
 	<key>com.apple.developer.associated-domains</key>
 	<array>
 		<string>dev-xephk2wk8nzc8smw.us.auth0.com</string>
+		<string>com.apple.developer.healthkit</string>
 	</array>
 </dict>
 </plist>

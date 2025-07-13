@@ -34,6 +34,8 @@ struct Homer: View {
                         Text("BarRaisingFitnessApp")
                             .font(.largeTitle)
                             .bold()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.5)
                             .foregroundColor(.white)
                             .padding(.top)
                         
