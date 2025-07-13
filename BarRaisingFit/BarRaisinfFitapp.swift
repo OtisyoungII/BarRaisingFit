@@ -11,7 +11,8 @@ import SwiftUI
 struct BarRaisinfFitapp: App {
     @StateObject private var profileVM = UserProfileViewModel()
     @State private var showSplash = true
-
+    @StateObject private var authVM = AuthViewModel()
+    
     var body: some Scene {
         WindowGroup {
             if showSplash {
@@ -26,7 +27,7 @@ struct BarRaisinfFitapp: App {
                     }
             } else {
                 Homer()
-                    .environmentObject(profileVM)
+                    .environmentObject(authVM)
                     .environmentObject(profileVM)
             }
         }
