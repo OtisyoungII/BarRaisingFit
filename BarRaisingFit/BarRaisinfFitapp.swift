@@ -8,15 +8,26 @@
 import SwiftUI
 
 @main
-struct YourApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
-    @StateObject private var auth = AuthViewModel()
+struct BarRaisinfFitapp: App {
+    @StateObject private var profileVM = UserProfileViewModel()
+    @State private var showSplash = true
 
     var body: some Scene {
         WindowGroup {
-            Homer() // Your SwiftUI root view
-                .environmentObject(auth)
+            if showSplash {
+                SplashScreenView()
+                    .onAppear {
+                        // Delay showing the main content for 4 seconds
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                            withAnimation {
+                                showSplash = false
+                            }
+                        }
+                    }
+            } else {
+                Homer()
+                    .environmentObject(profileVM)
+            }
         }
     }
 }

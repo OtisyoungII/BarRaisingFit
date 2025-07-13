@@ -6,193 +6,303 @@
 //
 
 import SwiftUI
-import AVFoundation
+import AudioToolbox
+import HealthKit
 
 struct Homer: View {
     @State private var showTimerOptions = false
-    @State private var selectedTime: Int? = nil
+    @State private var showCustomTimeInput = false
+    @State private var customTime = 30
+    
     @State private var countdown = 0
+    @State private var totalTime = 0
     @State private var timerRunning = false
-    @State private var timer: Timer?
-    @State private var player: AVAudioPlayer?
     @State private var isPaused = false
-    @State private var pausedTime: Int = 0
-
+    @State private var taskID = UUID()
+    
+    @State private var todaySteps: Double = 0
+    
     var body: some View {
-        ZStack {
-            Color("Teal1")
-                .ignoresSafeArea()
-
-            VStack(spacing: 20) {
-                // Title
-                Text("BarRaisingFitnessApp")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundColor(.white)
-                    .padding(.top)
-
-                // Image
-                Image("Some")
-                    .resizable()
-                    .frame(width: 200, height: 200)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
-
-                // Start Workout Button
-                Button {
-                    showTimerOptions.toggle()
-                } label: {
-                    Text("Start Workout")
-                        .font(.headline)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 15))
-                        .shadow(radius: 4)
-                }
-                .padding(.horizontal)
-                .foregroundColor(.white)
-
-                // Countdown Timer Display with Pause/Resume and Reset
-                if timerRunning {
-                    VStack(spacing: 10) {
-                        Text("Time: \(countdown) sec")
-                            .font(.title)
+        NavigationView {
+            ZStack {
+                Color("Teal1")
+                    .ignoresSafeArea()
+                
+                ScrollView {
+                    VStack(spacing: 20) {
+                        
+                        Text("BarRaisingFitnessApp")
+                            .font(.largeTitle)
+                            .bold()
                             .foregroundColor(.white)
-
-                        HStack(spacing: 20) {
-                            Button(action: {
-                                pauseOrResumeTimer()
-                            }) {
-                                Text(isPaused ? "Resume" : "Pause")
-                                    .font(.headline)
-                                    .padding()
-                                    .background(.ultraThinMaterial)
-                                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .padding(.top)
+                        
+                        Image("Some")
+                            .resizable()
+                            .frame(width: 200, height: 200)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                        
+                        Text("Today's Steps: \(Int(todaySteps))")
+                            .foregroundColor(.white)
+                            .font(.headline)
+                            .padding(.bottom, 5)
+                        
+                        Button {
+                            showTimerOptions.toggle()
+                        } label: {
+                            Text("Start Workout")
+                                .font(.headline)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(.ultraThinMaterial)
+                                .clipShape(RoundedRectangle(cornerRadius: 15))
+                                .shadow(radius: 4)
+                        }
+                        .padding(.horizontal)
+                        .foregroundColor(.white)
+                        
+                        Spacer(minLength: 40)
+                        
+                        // Circular Progress Ring
+                        if timerRunning {
+                            ZStack {
+                                Circle()
+                                    .stroke(lineWidth: 12)
+                                    .opacity(0.2)
                                     .foregroundColor(.white)
+                                
+                                Circle()
+                                    .trim(from: 0, to: CGFloat(progressFraction))
+                                    .stroke(style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                                    .foregroundColor(.green)
+                                    .rotationEffect(.degrees(-90))
+                                    .animation(.linear(duration: 0.2), value: countdown)
+                                
+                                Text("\(countdown) sec")
+                                    .font(.title2)
+                                    .foregroundColor(.white)
+                                    .bold()
                             }
-
-                            if isPaused {
-                                Button(action: resetTimer) {
-                                    Text("Reset")
+                            .frame(width: 200, height: 200)
+                        }
+                        
+                        // Pause / Resume / Reset
+                        if timerRunning {
+                            HStack(spacing: 20) {
+                                Button(action: pauseOrResumeTimer) {
+                                    Text(isPaused ? "Resume" : "Pause")
                                         .font(.headline)
                                         .padding()
                                         .background(.ultraThinMaterial)
                                         .clipShape(RoundedRectangle(cornerRadius: 12))
-                                        .foregroundColor(.red)
+                                        .foregroundColor(.white)
+                                }
+                                
+                                if isPaused {
+                                    Button(action: resetTimer) {
+                                        Text("Reset")
+                                            .font(.headline)
+                                            .padding()
+                                            .background(.ultraThinMaterial)
+                                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                                            .foregroundColor(.red)
+                                    }
                                 }
                             }
                         }
-                    }
-                }
-
-                Spacer()
-
-                // Navigation Buttons
-                VStack(spacing: 10) {
-                    ForEach(["Workouts", "GrindHouse Challenges", "Leaderboard", "Profile"], id: \.self) { label in
-                        Button {
-                            print("\(label) tapped")
-                        } label: {
-                            Text(label)
-                                .font(.headline)
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(.ultraThinMaterial)
-                                .clipShape(RoundedRectangle(cornerRadius: 15))
-                                .shadow(radius: 3)
-                                .foregroundColor(.white)
+                        
+                        Spacer(minLength: 30)
+                        
+                        // Navigation Buttons
+                        VStack(spacing: 10) {
+                            NavigationLink(destination: Workouts()) {
+                                Text("Workouts")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(.ultraThinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                                    .shadow(radius: 3)
+                                    .foregroundColor(.white)
+                            }
+                            NavigationLink(destination: GrindHouseChallenges()) {
+                                Text("GrindHouse Challenges")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(.ultraThinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                                    .shadow(radius: 3)
+                                    .foregroundColor(.white)
+                            }
+                            NavigationLink(destination: Leaderboards()) {
+                                Text("Leaderboards")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(.ultraThinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                                    .shadow(radius: 3)
+                                    .foregroundColor(.white)
+                            }
+                            NavigationLink(destination: Profile()) {
+                                Text("Profile")
+                                    .font(.headline)
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(.ultraThinMaterial)
+                                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                                    .shadow(radius: 3)
+                                    .foregroundColor(.white)
+                            }
                         }
+                        .padding(.horizontal)
+                        
+                        Spacer(minLength: 40)
                     }
                 }
-                .padding(.horizontal)
-            }
-
-            // Timer Options Pop-Up
-            if showTimerOptions {
-                VStack(spacing: 15) {
-                    Text("Select Duration")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.white)
-
-                    ForEach([30, 45, 60], id: \.self) { sec in
-                        Button("\(sec) Seconds") {
-                            startCountdown(sec)
+                
+                // Timer Options
+                if showTimerOptions {
+                    VStack(spacing: 15) {
+                        Text("Select Duration")
+                            .font(.title2)
+                            .bold()
+                            .foregroundColor(.white)
+                        
+                        ForEach([30, 45, 60], id: \.self) { sec in
+                            Button("\(sec) Seconds") {
+                                startCountdown(sec)
+                                showTimerOptions = false
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(.ultraThinMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .foregroundColor(.white)
+                        }
+                        
+                        Button("Custom Time...") {
+                            showCustomTimeInput = true
+                        }
+                        .foregroundColor(.yellow)
+                        
+                        Button("Cancel") {
                             showTimerOptions = false
                         }
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(.ultraThinMaterial)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .foregroundColor(.white)
+                        .foregroundColor(.red)
                     }
-
-                    Button("Cancel") {
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(20)
+                    .padding(30)
+                }
+            }
+            .navigationBarHidden(true)
+            .onAppear {
+                requestHealthKitPermissions()
+                HealthKitManager.shared.fetchStepCount { steps in
+                    if let steps = steps {
+                        DispatchQueue.main.async {
+                            todaySteps = steps
+                        }
+                    }
+                }
+            }
+            .sheet(isPresented: $showCustomTimeInput) {
+                VStack {
+                    Text("Custom Duration")
+                        .font(.title2)
+                        .bold()
+                        .padding()
+                    
+                    Stepper("Time: \(customTime) seconds", value: $customTime, in: 10...600, step: 5)
+                        .padding()
+                    
+                    Button("Start Timer") {
+                        startCountdown(customTime)
                         showTimerOptions = false
+                        showCustomTimeInput = false
+                    }
+                    .padding()
+                    .background(Color.blue.opacity(0.8))
+                    .foregroundColor(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    
+                    Button("Cancel") {
+                        showCustomTimeInput = false
                     }
                     .foregroundColor(.red)
                 }
                 .padding()
-                .background(.ultraThinMaterial)
-                .cornerRadius(20)
-                .padding(30)
             }
         }
     }
-
-    // Start countdown timer
+    
+    // MARK: - Timer Functions
+    
     func startCountdown(_ time: Int) {
         countdown = time
+        totalTime = time
         timerRunning = true
         isPaused = false
-        timer?.invalidate()
-
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            countdown -= 1
-            if countdown <= 0 {
-                timer?.invalidate()
+        taskID = UUID()
+        
+        Task {
+            let thisID = taskID
+            while countdown > 0 && taskID == thisID {
+                if !isPaused {
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    countdown -= 1
+                } else {
+                    try? await Task.sleep(nanoseconds: 200_000_000)
+                }
+            }
+            
+            if countdown <= 0 && taskID == thisID {
                 timerRunning = false
                 isPaused = false
-                playAlarm()
+                playSystemSound()
             }
         }
     }
-
-    // Pause or resume timer
+    
     func pauseOrResumeTimer() {
-        if isPaused {
-            startCountdown(countdown)
-            isPaused = false
-        } else {
-            timer?.invalidate()
-            isPaused = true
-        }
+        isPaused.toggle()
     }
-
-    // Reset timer
+    
     func resetTimer() {
-        timer?.invalidate()
+        taskID = UUID()
+        countdown = 0
         timerRunning = false
         isPaused = false
-        countdown = 0
     }
-
-    // Play sound when countdown ends
-    func playAlarm() {
-        guard let url = Bundle.main.url(forResource: "alarm", withExtension: "mp3") else { return }
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.play()
-        } catch {
-            print("Error playing alarm: \(error)")
+    
+    func playSystemSound() {
+        AudioServicesPlaySystemSound(SystemSoundID(1005)) // You can try others like 1007, 1012, etc.
+    }
+    
+    var progressFraction: Double {
+        guard totalTime > 0 else { return 0 }
+        return Double(totalTime - countdown) / Double(totalTime)
+    }
+    
+    func requestHealthKitPermissions() {
+        HealthKitManager.shared.requestAuthorization { success in
+            if success {
+                print("✅ HealthKit permission granted.")
+            } else {
+                print("❌ HealthKit permission denied.")
+            }
         }
     }
 }
 
+// 👇 Required for preview, assuming your app uses this environment object
 #Preview {
     Homer()
+        .environmentObject(UserProfileViewModel())
 }
 
-#Preview {
-    Homer()
-}
+
+

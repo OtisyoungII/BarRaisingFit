@@ -8,60 +8,62 @@
 import SwiftUI
 
 struct Profile: View {
-    @EnvironmentObject var auth: AuthViewModel
+    @EnvironmentObject var profileVM: UserProfileViewModel
 
     var body: some View {
-        VStack(spacing: 20) {
-            if auth.isAuthenticated, let user = auth.userInfo {
-                // Welcome message
-                Text("Welcome, \(user.name ?? "User")!")
-                    .font(.title)
-                    .fontWeight(.semibold)
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Title
+                    Text("👤 Profile")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
 
-                // User profile picture
-                if let picture = user.picture, let url = URL(string: picture) {
-                    AsyncImage(url: url) { image in
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 100, height: 100)
-                            .clipShape(Circle())
-                    } placeholder: {
-                        ProgressView()
+                    // Basic Info
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Name: \(profileVM.profile.name)")
+                            Text("Age: \(profileVM.profile.age)")
+                            if let gender = profileVM.profile.gender {
+                                Text("Gender: \(gender)")
+                            }
+                        }
+                        Spacer()
+                    }
+                    .font(.headline)
+
+                    Divider()
+
+                    // Physical Stats
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("📏 Height: \(String(format: "%.1f", profileVM.profile.heightInInches)) in")
+                        Text("⚖️ Weight: \(String(format: "%.1f", profileVM.profile.weightInPounds)) lbs")
+                        Text("📊 BMI: \(String(format: "%.1f", profileVM.profile.bmi))")
+                    }
+
+                    Divider()
+
+                    // Goal and Membership
+                    VStack(alignment: .leading, spacing: 10) {
+                        if let goal = profileVM.profile.goal {
+                            Text("🎯 Goal: \(goal)")
+                        }
+                        Text("📅 Joined: \(profileVM.profile.dateJoined, formatter: dateFormatter)")
                     }
                 }
-
-                // Logout button
-                Button(action: {
-                    auth.logout()
-                }) {
-                    Text("Logout")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.red.opacity(0.8))
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-
-            } else {
-                // Login button
-                Button(action: {
-                    auth.login()
-                }) {
-                    Text("Login with Auth0")
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
+                .padding()
             }
+            .navigationTitle("Your Profile")
         }
-        .padding()
-        .navigationTitle("Profile")
+    }
+
+    private var dateFormatter: DateFormatter {
+        let df = DateFormatter()
+        df.dateStyle = .medium
+        return df
     }
 }
-
 #Preview {
-    Profile().environmentObject(AuthViewModel())
+    Profile()
+        .environmentObject(UserProfileViewModel())
 }
