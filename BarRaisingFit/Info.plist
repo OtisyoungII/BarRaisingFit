@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>UILaunchStoryBoardName</key>
-    <string>LaunchScreen</string>
-    <key>NSHealthShareUsageDescription</key>
-    <string>This app require access to your health data to track fitness progress and personalize your experience.</string>
-    <key>NSHealthUpdateUsageDescription</key>
-    <string>This app write workout and activity data to HealthKit to help track your fitness goals.</string>
-    <key>UILaunchStoryBoardName</key>
-    <string>LaunchScreen</string>
 	<key>CfBundleURLTypes</key>
 	<array>
 		<dict>
@@ -38,5 +30,7 @@
 			</array>
 		</dict>
 	</dict>
+	<key>UILaunchStoryBoardName</key>
+	<string>LaunchScreen</string>
 </dict>
 </plist>

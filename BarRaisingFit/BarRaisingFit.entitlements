@@ -7,5 +7,7 @@
 		<string>dev-xephk2wk8nzc8smw.us.auth0.com</string>
 		<string>com.apple.developer.healthkit</string>
 	</array>
+	<key>com.apple.developer.healthkit</key>
+	<true/>
 </dict>
 </plist>
