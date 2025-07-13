@@ -25,6 +25,7 @@
 
 /* Begin PBXFileReference section */
 		B325A1F12D043F3E0080BDBA /* BarRaisingFit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BarRaisingFit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B32942C72E23CDAC00BA4B86 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		B3EA36962E22B65600168C84 /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -87,6 +88,7 @@
 		B3EA36952E22B65500168C84 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B32942C72E23CDAC00BA4B86 /* HealthKit.framework */,
 				B3EA36962E22B65600168C84 /* AuthenticationServices.framework */,
 			);
 			name = Frameworks;
@@ -185,8 +187,11 @@
 				CODE_SIGN_ENTITLEMENTS = BarRaisingFit/BarRaisingFit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 525SRF9A35;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BarRaisingFit/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "BarRaising Fitness App";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app require access to your health data to track fitness progress and personalize your experience.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app write workout and activity data to HealthKit to help track your fitness goals.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -214,8 +219,11 @@
 				CODE_SIGN_ENTITLEMENTS = BarRaisingFit/BarRaisingFit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 525SRF9A35;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BarRaisingFit/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "BarRaising Fitness App";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This app require access to your health data to track fitness progress and personalize your experience.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "This app write workout and activity data to HealthKit to help track your fitness goals.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

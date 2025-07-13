@@ -15,6 +15,7 @@ struct UserProfile {
     var gender: String?
     var dateJoined: Date
     var goal: String?
+    var profilePictureURL: URL?
 
     var bmi: Double {
         (weightInPounds / (heightInInches * heightInInches)) * 703

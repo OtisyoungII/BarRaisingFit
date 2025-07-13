@@ -2,35 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CfBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>BaRaisingFit.com.APLDE-VO.BaRaisingFit</key>
-			<string></string>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array/>
-		</dict>
-	</array>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UISceneConfigurations</key>
-		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneConfigurationName</key>
-					<string>Default Configuration</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
-	<key>UILaunchStoryBoardName</key>
-	<string>LaunchScreen</string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>This app uses HealthKit to read step counts and workout data.</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>This app uses HealthKit to track your workouts and contribute data.</string>
 </dict>
 </plist>

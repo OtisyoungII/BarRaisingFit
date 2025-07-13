@@ -27,6 +27,7 @@ struct BarRaisinfFitapp: App {
             } else {
                 Homer()
                     .environmentObject(profileVM)
+                    .environmentObject(profileVM)
             }
         }
     }
