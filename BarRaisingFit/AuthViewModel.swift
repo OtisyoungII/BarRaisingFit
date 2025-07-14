@@ -12,7 +12,7 @@ import Combine
 class AuthViewModel: ObservableObject {
     @Published var isAuthenticated = false
     @Published var userName: String = ""
-    @Published var profilePictureURL: URL?  // ✅ String now
+    @Published var profilePictureURL: URL? 
 
     func login(completion: @escaping () -> Void = {}) {
         Auth0
