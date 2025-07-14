@@ -8,6 +8,10 @@
 import SwiftUI
 import HealthKit
 
+enum Tab: String {
+    case metrics, activity, profile, settings
+}
+
 struct Homer: View {
     @State private var showTimerOptions = false
     @State private var showCustomTimeInput = false
@@ -20,6 +24,7 @@ struct Homer: View {
 
     @StateObject private var timer = TimerManager()
     @State private var offset: CGFloat = 0
+    @State private var selectedTab: Tab = .metrics
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -38,13 +43,16 @@ struct Homer: View {
                         .font(.largeTitle)
                         .bold()
 
-                    HStack(spacing: 12) {
-                        MetricCard(title: "Steps", value: "\(Int(todaySteps))")
-                        MetricCard(title: "Distance", value: String(format: "%.2f mi", distanceWalked * 0.000621371))
-                        MetricCard(title: "Flights", value: "\(Int(flightsClimbed))")
-                        MetricCard(title: "Heart Rate", value: "\(Int(currentHeartRate)) bpm")
+                    switch selectedTab {
+                    case .metrics:
+                        metricsSection
+                    case .activity:
+                        activitySection
+                    case .profile:
+                        profileSection
+                    case .settings:
+                        settingsSection
                     }
-                    .padding(.horizontal)
 
                     Button {
                         showTimerOptions.toggle()
@@ -78,9 +86,7 @@ struct Homer: View {
                                 .bold()
                         }
                         .frame(width: 200, height: 200)
-                    }
 
-                    if timer.timerRunning {
                         HStack(spacing: 20) {
                             Button(action: timer.pauseOrResumeTimer) {
                                 Text(timer.isPaused ? "Resume" : "Pause")
@@ -143,21 +149,8 @@ struct Homer: View {
                 }
             }
 
-            // Bottom Liquid Glass Navigation
-            HStack {
-                Spacer()
-                Image(systemName: "house.fill")
-                Spacer()
-                Image(systemName: "flame.fill")
-                Spacer()
-                Image(systemName: "person.crop.circle")
-                Spacer()
-            }
-            .padding()
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 25))
-            .shadow(radius: 8)
-            .padding(.horizontal)
+            GlassEffectTabBar(selectedTab: $selectedTab)
+                .padding(.horizontal)
         }
         .edgesIgnoringSafeArea(.top)
         .sheet(isPresented: $showCustomTimeInput) {
@@ -168,6 +161,34 @@ struct Homer: View {
             timerOptionsSheet
         }
     }
+
+    // MARK: - Tab Sections
+
+    var metricsSection: some View {
+        VStack(spacing: 16) {
+            MetricCard(title: "Steps", value: "\(Int(todaySteps))")
+            MetricCard(title: "Heart Rate", value: "\(Int(currentHeartRate)) bpm")
+            MetricCard(title: "Distance", value: String(format: "%.2f mi", distanceWalked * 0.000621371))
+            MetricCard(title: "Flights", value: "\(Int(flightsClimbed))")
+        }
+    }
+
+    var activitySection: some View {
+        Text("Activity View Coming Soon")
+            .font(.title2)
+    }
+
+    var profileSection: some View {
+        Text("Profile View Coming Soon")
+            .font(.title2)
+    }
+
+    var settingsSection: some View {
+        Text("Settings View Coming Soon")
+            .font(.title2)
+    }
+
+    // MARK: - Timer Sheets
 
     var timerOptionsSheet: some View {
         VStack(spacing: 15) {
@@ -230,20 +251,26 @@ struct Homer: View {
     }
 }
 
-// MARK: - Supporting Views
+// MARK: - Hero Header
 
 struct HeroHeader: View {
     var body: some View {
-        Image("Some") // Replace with your image asset
+        Image("Some")
             .resizable()
             .scaledToFill()
             .frame(maxWidth: .infinity)
             .clipped()
             .overlay(
-                LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.3), .clear]), startPoint: .top, endPoint: .bottom)
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.black.opacity(0.3), .clear]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
             )
     }
 }
+
+// MARK: - Scroll Offset Key
 
 struct ScrollOffsetKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
@@ -258,5 +285,3 @@ struct ScrollOffsetKey: PreferenceKey {
     Homer()
         .environmentObject(UserProfileViewModel())
 }
-
-
