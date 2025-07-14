@@ -9,7 +9,15 @@ import SwiftUI
 
 struct Workouts: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationView {
+            VStack {
+                Text("Workout Screen")
+                    .font(.largeTitle)
+                    .padding()
+                // Add your workout UI here
+            }
+            .navigationTitle("Workout")
+        }
     }
 }
 
