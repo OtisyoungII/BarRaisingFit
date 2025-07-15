@@ -21,7 +21,7 @@ class AuthViewModel: ObservableObject {
     
     func login(completion: @escaping (Bool) -> Void) {
         Auth0.webAuth(clientId: clientId, domain: domain)
-            .scope("openid profile email read:current_user update:current_user_metadata")
+            .scope("openid profile email read:current_user read:users")
             .audience("https://\(domain)/api/v2/")
             .start { result in
                 switch result {

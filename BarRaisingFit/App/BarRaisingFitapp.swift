@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct BarRaisinfFitapp: App {
+struct BarRaisingFitapp: App {
     @StateObject private var profileVM = UserProfileViewModel()
     @State private var showSplash = true
     @StateObject private var authVM = AuthViewModel()

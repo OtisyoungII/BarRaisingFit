@@ -32,7 +32,14 @@
 		B325A2032D043F3F0080BDBA /* Exceptions for "BarRaisingFit" folder in "BarRaisingFit" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				App/Info.plist,
+			);
+			target = B325A1F02D043F3E0080BDBA /* BarRaisingFit */;
+		};
+		B3ECFA842E26337A0063B135 /* Exceptions for "Auth0" folder in "BarRaisingFit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Auth0.plist,
 			);
 			target = B325A1F02D043F3E0080BDBA /* BarRaisingFit */;
 		};
@@ -49,6 +56,9 @@
 		};
 		B3EA36982E22B65600168C84 /* Auth0 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B3ECFA842E26337A0063B135 /* Exceptions for "Auth0" folder in "BarRaisingFit" target */,
+			);
 			path = Auth0;
 			sourceTree = "<group>";
 		};
