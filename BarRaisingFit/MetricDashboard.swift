@@ -78,6 +78,4 @@ struct MetricsDashboard: View {
     MetricsDashboard(hideTabBar: .constant(false))
         .environmentObject(UserProfileViewModel())
 }
-#Preview {
-    MetricsDashboard(hideTabBar: .constant(false))
-}
+

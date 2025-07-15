@@ -24,29 +24,21 @@ struct GlassEffectTabBar: View {
             }
             .background(.ultraThinMaterial)
             .clipShape(Capsule())
-            .overlay(bubble(in: fullGeo), alignment: .leading)
+            .overlay(
+                GlassTabBubble(
+                    width: fullGeo.size.width / CGFloat(tabs.count),
+                    index: dragIndex ?? tabs.firstIndex(of: selectedTab)!,
+                    scale: dragIndex != nil ? 1.1 : 1.0,
+                    colorScheme: colorScheme,
+                    namespace: bubbleAnimation
+                ),
+                alignment: .leading
+            )
             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
             .gesture(dragGesture(fullGeo: fullGeo))
         }
         .frame(height: 70)
         .padding(.horizontal, 12)
-    }
-
-    private func bubble(in geo: GeometryProxy) -> some View {
-        let idx = dragIndex ?? tabs.firstIndex(of: selectedTab)!
-        let width = geo.size.width / CGFloat(tabs.count)
-        let scale = dragIndex != nil ? 1.1 : 1.0
-
-        return Capsule()
-            .fill(colorScheme == .dark ? Color.white.opacity(0.15) : Color.black.opacity(0.1))
-            .background(
-                Capsule()
-                    .stroke(colorScheme == .dark ? Color.white.opacity(0.3) : Color.black.opacity(0.15), lineWidth: 1)
-            )
-            .matchedGeometryEffect(id: "bubble", in: bubbleAnimation)
-            .frame(width: width * scale, height: 50 * scale)
-            .offset(x: CGFloat(idx) * width - (width * (scale - 1) / 2), y: 0)
-            .animation(.interactiveSpring(response: 0.3, dampingFraction: 0.7), value: dragIndex)
     }
 
     private func tabButton(for tab: Tab, at index: Int, fullGeo: GeometryProxy) -> some View {
@@ -56,7 +48,7 @@ struct GlassEffectTabBar: View {
             Text(labelName(for: tab))
                 .font(.caption2)
         }
-        .foregroundStyle(selectedTab == tab ? Color.primary : Color.secondary)
+        .foregroundStyle(selectedTab == tab ? Color("Teal1") : Color.secondary)
         .frame(width: fullGeo.size.width / CGFloat(tabs.count), height: 70)
         .contentShape(Rectangle())
         .onTapGesture {

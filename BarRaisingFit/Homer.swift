@@ -32,94 +32,81 @@ struct Homer: View {
             Group {
                 switch selectedTab {
                 case .metrics:
-                    ScrollView {
-                        GeometryReader { geo in
-                            Color.clear
-                                .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
-                        }
-                        .frame(height: 0)
-
-                        HeroHeader()
-                            .frame(height: 250)
-
-                        VStack(spacing: 20) {
-                            Text("BarRaisingFitnessApp")
-                                .font(.largeTitle)
-                                .bold()
-
-                            metricsSection
-
-                            Button {
-                                showTimerOptions.toggle()
-                            } label: {
-                                Text("Start Workout")
-                                    .font(.headline)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.green.opacity(0.9))
-                                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                                    .foregroundColor(.white)
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            GeometryReader { geo in
+                                Color.clear
+                                    .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
                             }
-                            .padding(.horizontal)
-
-                            if timer.timerRunning {
-                                ZStack {
-                                    Circle()
-                                        .stroke(lineWidth: 12)
-                                        .opacity(0.2)
-                                        .foregroundColor(.gray)
-
-                                    Circle()
-                                        .trim(from: 0, to: CGFloat(timer.progressFraction))
-                                        .stroke(style: StrokeStyle(lineWidth: 12, lineCap: .round))
-                                        .foregroundColor(.green)
-                                        .rotationEffect(.degrees(-90))
-                                        .animation(.linear(duration: 0.2), value: timer.countdown)
-
-                                    Text("\(timer.countdown) sec")
-                                        .font(.title2)
-                                        .bold()
+                            .frame(height: 0)
+                            
+                            HeroHeader()
+                                .frame(height: 250)
+                            
+                            VStack(spacing: 20) {
+                                Text("BarRaisingFitnessApp")
+                                    .font(.largeTitle)
+                                    .bold()
+                                
+                                metricsSection
+                                
+                                Button {
+                                    withAnimation {
+                                        showTimerOptions.toggle()
+                                    }
+                                } label: {
+                                    Text("Start Workout")
+                                        .font(.headline)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color.green.opacity(0.9))
+                                        .clipShape(RoundedRectangle(cornerRadius: 15))
+                                        .foregroundColor(.white)
                                 }
-                                .frame(width: 200, height: 200)
-
-                                HStack(spacing: 20) {
-                                    Button(action: timer.pauseOrResumeTimer) {
-                                        Text(timer.isPaused ? "Resume" : "Pause")
-                                            .font(.headline)
-                                            .padding()
-                                            .background(Color.orange)
-                                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                                            .foregroundColor(.white)
+                                .padding(.horizontal)
+                                
+                                if timer.timerRunning {
+                                    VStack(spacing: 16) {
+                                        TimerCardView(timer: timer)
+                                            .frame(width: 200, height: 200)
+                                        TimerControlButtonsView(timer: timer)
                                     }
-
-                                    if timer.isPaused {
-                                        Button(action: timer.resetTimer) {
-                                            Text("Reset")
-                                                .font(.headline)
-                                                .padding()
-                                                .background(Color.red)
-                                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                                                .foregroundColor(.white)
-                                        }
-                                    }
+                                    .id("TIMER_SECTION")
+                                }
+                                
+                                Spacer(minLength: 30)
+                            }
+                            .padding()
+                        }
+                        .onChange(of: timer.timerRunning, initial: false) { newValue, oldValue in
+                            if newValue {
+                                withAnimation(.easeInOut) {
+                                    proxy.scrollTo("TIMER_SECTION", anchor: .top)
                                 }
                             }
-
-                            Spacer(minLength: 30)
                         }
-                        .padding()
                     }
+                    
+                
                 case .activity:
                     ActivityView(hideTabBar: $hideTabBar)
+
                 case .profile:
                     Profile()
+
                 case .settings:
                     SettingsView(hideTabBar: $hideTabBar)
                 }
             }
             .onPreferenceChange(ScrollOffsetKey.self) { newOffset in
                 withAnimation {
-                    hideTabBar = newOffset < -50
+                    if timer.timerRunning {
+                        // Keep tab bar visible while timer runs
+                        hideTabBar = false
+                    } else {
+                        // Otherwise hide when scrolled up enough
+                        hideTabBar = newOffset < -50
+                    }
                     offset = newOffset
                 }
             }
@@ -131,23 +118,19 @@ struct Homer: View {
                                 todaySteps = steps ?? 0
                             }
                         }
-
                         HealthKitManager.shared.startObservingStepCountUpdates { updatedSteps in
                             todaySteps = updatedSteps
                         }
-
                         HealthKitManager.shared.fetchDistanceWalked { distance in
                             DispatchQueue.main.async {
                                 distanceWalked = distance ?? 0
                             }
                         }
-
                         HealthKitManager.shared.fetchFlightsClimbed { flights in
                             DispatchQueue.main.async {
                                 flightsClimbed = flights ?? 0
                             }
                         }
-
                         HealthKitManager.shared.startHeartRateUpdates { bpm in
                             currentHeartRate = bpm
                         }
@@ -171,8 +154,6 @@ struct Homer: View {
         }
     }
 
-    // MARK: - Tab Sections
-
     var metricsSection: some View {
         VStack(spacing: 16) {
             MetricCard(title: "Steps", value: "\(Int(todaySteps))")
@@ -181,8 +162,6 @@ struct Homer: View {
             MetricCard(title: "Flights", value: "\(Int(flightsClimbed))")
         }
     }
-
-    // MARK: - Timer Sheets
 
     var timerOptionsSheet: some View {
         VStack(spacing: 15) {
@@ -245,8 +224,6 @@ struct Homer: View {
     }
 }
 
-// MARK: - Hero Header
-
 struct HeroHeader: View {
     var body: some View {
         Image("Some")
@@ -264,16 +241,12 @@ struct HeroHeader: View {
     }
 }
 
-// MARK: - Scroll Offset Key
-
 struct ScrollOffsetKey: PreferenceKey {
     static var defaultValue: CGFloat = 0
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = nextValue()
     }
 }
-
-// MARK: - Preview
 
 #Preview {
     Homer()
