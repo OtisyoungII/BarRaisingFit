@@ -54,45 +54,48 @@ class AuthViewModel: ObservableObject {
         do {
             let jwt = try decode(jwt: idToken)
             let name = jwt.claim(name: "name").string ?? "User"
-//            let email = jwt.claim(name: "email").string ?? "No Email"
             let picture = jwt.claim(name: "picture").string
             let url = picture.flatMap(URL.init)
             
             DispatchQueue.main.async {
-                self.userProfile = UserProfile(
-                    name: name,
-                    age: 0, heightInFeet: 0,
-                    heightInInches: 0,
-                    weightInPounds: 0,
-                    gender: nil,
-                    dateJoined: Date(),
-                    goal: nil,
-                    profilePictureURL: url
-                )
+                if self.userProfile == nil {
+                    self.userProfile = UserProfile(
+                        name: name,
+                        age: 0,
+                        heightInFeet: 0,
+                        heightInInches: 0,
+                        weightInPounds: 0,
+                        gender: nil,
+                        dateJoined: Date(),
+                        goal: nil,
+                        profilePictureURL: url
+                    )
+                }
+                
+                if let token = self.accessToken {
+                    Auth0.users(token: token)
+                        .get("auth0|\(jwt.subject ?? "")")
+                        .start { result in
+                            switch result {
+                            case .success(let user):
+                                if let meta = user["user_metadata"] as? [String: Any] {
+                                    let gender = meta["gender"] as? String
+                                    let goal = meta["goal"] as? String
+                                    let age = meta["age"] as? Int ?? 0
+                                    
+                                    DispatchQueue.main.async {
+                                        self.userProfile?.gender = gender
+                                        self.userProfile?.goal = goal
+                                        self.userProfile?.age = age
+                                    }
+                                }
+                            case .failure(let error):
+                                print("Failed to fetch user metadata: \(error)")
+                            }
+                        }
+                }
             }
             
-            if let token = accessToken {
-                Auth0.users(token: token)
-                    .get("auth0|\(jwt.subject ?? "")")
-                    .start { result in
-                        switch result {
-                        case .success(let user):
-                            if let meta = user["user_metadata"] as? [String: Any] {
-                                let gender = meta["gender"] as? String
-                                let goal = meta["goal"] as? String
-                                let age = meta["age"] as? Int ?? 0
-                                
-                                DispatchQueue.main.async {
-                                    self.userProfile?.gender = gender
-                                    self.userProfile?.goal = goal
-                                    self.userProfile?.age = age
-                                }
-                            }
-                        case .failure(let error):
-                            print("Failed to fetch user metadata: \(error)")
-                        }
-                    }
-            }
         } catch {
             print("JWT Decode Error:", error)
         }
