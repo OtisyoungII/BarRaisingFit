@@ -47,7 +47,7 @@ struct Profile: View {
                     .font(.title)
                     .bold()
 
-                HStack(spacing: 20) {
+                HStack(spacing: 40) {
                     VStack {
                         Text("Age")
                             .font(.caption)
@@ -66,7 +66,7 @@ struct Profile: View {
                 }
 
                 VStack(spacing: 10) {
-                    Text("Height: \(String(format: "%.1f", profileVM.profile.heightInInches / 12)) ft")
+                    Text("Height: \(profileVM.profile.heightInFeet) ft \(profileVM.profile.heightInInches) in")
                     Text("Weight: \(Int(profileVM.profile.weightInPounds)) lbs")
                     Text("BMI: \(String(format: "%.1f", profileVM.profile.bmi))")
                 }
@@ -90,5 +90,4 @@ struct Profile: View {
 #Preview {
     Profile()
         .environmentObject(UserProfileViewModel())
-}        
-
+}

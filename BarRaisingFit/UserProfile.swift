@@ -10,14 +10,19 @@ import Foundation
 struct UserProfile {
     var name: String
     var age: Int
-    var heightInInches: Double
+    var heightInFeet: Int
+    var heightInInches: Int
     var weightInPounds: Double
     var gender: String?
     var dateJoined: Date
     var goal: String?
     var profilePictureURL: URL?
+    
+    var totalHeightInInches: Double {
+        Double(heightInFeet) * 12 + Double(heightInInches)
+    }
 
     var bmi: Double {
-        (weightInPounds / (heightInInches * heightInInches)) * 703
+        (weightInPounds / (totalHeightInInches * totalHeightInInches)) * 703
     }
 }

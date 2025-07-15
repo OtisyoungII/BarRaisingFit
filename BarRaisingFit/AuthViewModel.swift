@@ -7,55 +7,94 @@
 
 import Foundation
 import Auth0
-import Combine
+import JWTDecode
+import SwiftUI
 
 class AuthViewModel: ObservableObject {
     @Published var isAuthenticated = false
-    @Published var userName: String = ""
-    @Published var profilePictureURL: URL? 
-
-    func login(completion: @escaping () -> Void = {}) {
-        Auth0
-            .webAuth()
-            .scope("openid profile")
+    @Published var accessToken: String?
+    @Published var idToken: String?
+    @Published var userProfile: UserProfile?
+    
+    private let domain = "dev-xephk2wk8nzc8smw.us.auth0.com"
+    private let clientId = "8fII96RVaxeLVW9MY26kVCPbludB43G7"
+    
+    func login(completion: @escaping (Bool) -> Void) {
+        Auth0.webAuth(clientId: clientId, domain: domain)
+            .scope("openid profile email read:current_user update:current_user_metadata")
+            .audience("https://\(domain)/api/v2/")
             .start { result in
                 switch result {
                 case .success(let credentials):
                     self.isAuthenticated = true
-                    self.fetchUserProfile(accessToken: credentials.accessToken, completion: completion)
+                    self.accessToken = credentials.accessToken
+                    self.idToken = credentials.idToken
+                    self.fetchUserProfile()
+                    completion(true)
                 case .failure(let error):
-                    print("Login failed: \(error)")
+                    print("Auth0 Login Error:", error)
+                    completion(false)
                 }
             }
     }
-
-    private func fetchUserProfile(accessToken: String, completion: @escaping () -> Void) {
-        Auth0
-            .authentication()
-            .userInfo(withAccessToken: accessToken)
-            .start { result in
-                switch result {
-                case .success(let profile):
-                    DispatchQueue.main.async {
-                        self.userName = profile.name ?? "User"
-                        self.profilePictureURL = profile.picture  // ✅ No URL conversion
-                        completion()
-                    }
-                case .failure(let error):
-                    print("Failed to fetch profile: \(error)")
-                }
-            }
-    }
-
     func logout() {
-        Auth0
-            .webAuth()
-            .clearSession { success in
+        Auth0.webAuth(clientId: clientId, domain: domain)
+            .clearSession { _ in
                 DispatchQueue.main.async {
                     self.isAuthenticated = false
-                    self.userName = ""
-                    self.profilePictureURL = nil
+                    self.userProfile = nil
+                    self.accessToken = nil
+                    self.idToken = nil
                 }
             }
+    }
+    func fetchUserProfile() {
+        guard let idToken = idToken else { return }
+        
+        do {
+            let jwt = try decode(jwt: idToken)
+            let name = jwt.claim(name: "name").string ?? "User"
+//            let email = jwt.claim(name: "email").string ?? "No Email"
+            let picture = jwt.claim(name: "picture").string
+            let url = picture.flatMap(URL.init)
+            
+            DispatchQueue.main.async {
+                self.userProfile = UserProfile(
+                    name: name,
+                    age: 0, heightInFeet: 0,
+                    heightInInches: 0,
+                    weightInPounds: 0,
+                    gender: nil,
+                    dateJoined: Date(),
+                    goal: nil,
+                    profilePictureURL: url
+                )
+            }
+            
+            if let token = accessToken {
+                Auth0.users(token: token)
+                    .get("auth0|\(jwt.subject ?? "")")
+                    .start { result in
+                        switch result {
+                        case .success(let user):
+                            if let meta = user["user_metadata"] as? [String: Any] {
+                                let gender = meta["gender"] as? String
+                                let goal = meta["goal"] as? String
+                                let age = meta["age"] as? Int ?? 0
+                                
+                                DispatchQueue.main.async {
+                                    self.userProfile?.gender = gender
+                                    self.userProfile?.goal = goal
+                                    self.userProfile?.age = age
+                                }
+                            }
+                        case .failure(let error):
+                            print("Failed to fetch user metadata: \(error)")
+                        }
+                    }
+            }
+        } catch {
+            print("JWT Decode Error:", error)
+        }
     }
 }

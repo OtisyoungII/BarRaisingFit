@@ -2,9 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>NSHealthShareUsageDescription</key>
-    <string>This app uses HealthKit to read step counts and workout data.</string>
-    <key>NSHealthUpdateUsageDescription</key>
-    <string>This app uses HealthKit to track your workouts and contribute data.</string>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>This app uses HealthKit to read step counts and workout data.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>This app uses HealthKit to track your workouts and contribute data.</string>
 </dict>
 </plist>

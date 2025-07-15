@@ -10,7 +10,7 @@ import SwiftUI
 struct SplashScreenView: View {
     var body: some View {
         ZStack {
-            Color("LaunchBackgroundColor") // Match your LaunchScreen background color
+            Color("LaunchBackGroundColor") // Match your LaunchScreen background color
                 .ignoresSafeArea()
 
             Image("LaunchImage") // Optional: same image as your LaunchScreen
