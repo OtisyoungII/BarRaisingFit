@@ -29,10 +29,10 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		B325A2032D043F3F0080BDBA /* Exceptions for "BarRaisingFit" folder in "BarRaisingFit" target */ = {
+		B38234B22E26416300085750 /* Exceptions for "BarRaisingFit" folder in "BarRaisingFit" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				App/Info.plist,
+				Info.plist,
 			);
 			target = B325A1F02D043F3E0080BDBA /* BarRaisingFit */;
 		};
@@ -49,7 +49,7 @@
 		B325A1F32D043F3E0080BDBA /* BarRaisingFit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				B325A2032D043F3F0080BDBA /* Exceptions for "BarRaisingFit" folder in "BarRaisingFit" target */,
+				B38234B22E26416300085750 /* Exceptions for "BarRaisingFit" folder in "BarRaisingFit" target */,
 			);
 			path = BarRaisingFit;
 			sourceTree = "<group>";
@@ -196,8 +196,10 @@
 				CODE_SIGN_ENTITLEMENTS = BarRaisingFit/BarRaisingFit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 525SRF9A35;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BarRaisingFit/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -223,8 +225,10 @@
 				CODE_SIGN_ENTITLEMENTS = BarRaisingFit/BarRaisingFit.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 525SRF9A35;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BarRaisingFit/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
