@@ -110,6 +110,15 @@ struct ActivityView: View {
                 self.heartRate = value
             }
         }
+
+    }
+}
+    /// Custom preference key to track scroll offset
+struct ScrollOffsetKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 

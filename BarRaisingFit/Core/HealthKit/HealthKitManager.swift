@@ -83,7 +83,9 @@ class HealthKitManager {
             }
 
             let steps = stats?.sumQuantity()?.doubleValue(for: .count())
+            print("📥 Fetching step count...")
             completion(steps)
+            print("📊 Step count result: \(steps ?? -1)")
         }
 
         healthStore.execute(query)
@@ -106,7 +108,9 @@ class HealthKitManager {
             }
 
             let distance = stats?.sumQuantity()?.doubleValue(for: HKUnit.meter())
+            print("📥 Fetching distance walked...")
             completion(distance)
+            print("📏 Distance walked result: \(distance ?? -1)")
         }
 
         healthStore.execute(query)
@@ -130,7 +134,9 @@ class HealthKitManager {
 
             let flights = stats?.sumQuantity()?.doubleValue(for: HKUnit.count())
             DispatchQueue.main.async {
+                print("📥 Fetching flights climbed...")
                 completion(flights)
+                print("🧗‍♂️ Flights climbed result: \(flights ?? -1)")
             }
         }
 
@@ -177,6 +183,7 @@ class HealthKitManager {
             }
 
             DispatchQueue.main.async {
+                print("📆 Historical steps fetched: \(stepRecords.count) days")
                 completion(stepRecords)
             }
         }
@@ -229,7 +236,9 @@ class HealthKitManager {
             }
 
             let calories = stats?.sumQuantity()?.doubleValue(for: .kilocalorie())
+            print("🔥 Fetching active energy...")
             completion(calories)
+            print("⚡️ Active energy result: \(calories ?? -1)")
         }
 
         healthStore.execute(query)
@@ -244,7 +253,9 @@ class HealthKitManager {
             if let sample = samples?.last as? HKQuantitySample {
                 let bpm = sample.quantity.doubleValue(for: HKUnit(from: "count/min"))
                 DispatchQueue.main.async {
+                    print("❤️ Starting heart rate updates...")
                     updateHandler(bpm)
+                    print("❤️‍🔥 Heart rate update received: \(bpm)")
                 }
             }
         }

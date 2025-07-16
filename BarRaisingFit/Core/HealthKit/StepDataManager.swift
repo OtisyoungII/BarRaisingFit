@@ -22,16 +22,24 @@ class StepDataManager: ObservableObject {
     }
 
     /// Sync with HealthKit over a date range (default: last 14 days)
-    func syncWithHealthKit(startingFrom startDate: Date = Calendar.current.date(byAdding: .day, value: -14, to: Date())!) {
+func syncWithHealthKit(startingFrom startDate: Date = Calendar.current.date(byAdding: .day, value: -14, to: Date())!,
+                           completion: (() -> Void)? = nil) {
         HealthKitManager.shared.fetchHistoricalSteps(startDate: startDate) { [weak self] healthKitSteps in
             guard let self = self else { return }
-
+            
             for newRecord in healthKitSteps {
                 self.addOrUpdateStep(from: newRecord)
+                
             }
-
+            
             self.saveStepHistory()
+            
             print("✅ Step history synced from HealthKit")
+            
+            // ✅ Trigger the optional completion handler
+            DispatchQueue.main.async {
+                completion?()
+            }
         }
     }
 

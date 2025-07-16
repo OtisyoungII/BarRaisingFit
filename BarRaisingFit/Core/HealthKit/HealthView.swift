@@ -14,7 +14,10 @@ struct HealthView: View {
     @State private var flightsClimbed: Double = 0
     @State private var heartRate: Double = 0
     @State private var permissionGranted = false
-
+    @State private var isHealthKitAuthorized = false
+    
+    
+    
     var body: some View {
         NavigationView {
             VStack(spacing: 20) {
@@ -24,7 +27,7 @@ struct HealthView: View {
                         MetricCard(title: "Distance (m)", value: String(format: "%.1f", distance))
                         MetricCard(title: "Flights Climbed", value: "\(Int(flightsClimbed))")
                         MetricCard(title: "Heart Rate (BPM)", value: String(format: "%.0f", heartRate))
-
+                        
                         NavigationLink(destination: StepHistoryView()) {
                             Text("View Step History")
                                 .font(.headline)
@@ -40,6 +43,7 @@ struct HealthView: View {
                     Text("Requesting HealthKit permission...")
                         .onAppear {
                             HealthKitManager.shared.requestAuthorization { granted in
+                                print("🔑 HealthKit permission callback. Granted: \(granted)")
                                 permissionGranted = granted
                                 if granted {
                                     fetchAllMetrics()
@@ -56,38 +60,41 @@ struct HealthView: View {
             .navigationTitle("Health Stats")
         }
     }
-
+    
     private func fetchAllMetrics() {
         HealthKitManager.shared.fetchStepCount { steps in
-            if let steps = steps {
-                stepCount = steps
+            DispatchQueue.main.async {
+                stepCount = steps ?? 0
             }
         }
         HealthKitManager.shared.fetchDistanceWalked { dist in
-            if let dist = dist {
-                distance = dist
+            DispatchQueue.main.async {
+                distance = dist ?? 0
             }
         }
         HealthKitManager.shared.fetchFlightsClimbed { flights in
-            if let flights = flights {
-                flightsClimbed = flights
+            DispatchQueue.main.async {
+                flightsClimbed = flights ?? 0
             }
         }
     }
-
+    
     private func startStepCountObserver() {
         HealthKitManager.shared.startObservingStepCountUpdates { steps in
-            stepCount = steps
+            DispatchQueue.main.async {
+                stepCount = steps
+            }
         }
     }
-
+    
     private func startHeartRateUpdates() {
         HealthKitManager.shared.startHeartRateUpdates { bpm in
-            heartRate = bpm
+            DispatchQueue.main.async {
+                heartRate = bpm
+            }
         }
     }
 }
-
 #Preview {
     HealthView()
 }
