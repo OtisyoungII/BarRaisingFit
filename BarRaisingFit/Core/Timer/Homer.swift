@@ -9,10 +9,12 @@ import SwiftUI
 import HealthKit
 
 enum Tab {
-    case metrics, activity, profile, settings
+    case metrics, activity, profile, settings, history
 }
 
 struct Homer: View {
+    @EnvironmentObject var appState: AppState
+
     @State private var showTimerOptions = false
     @State private var showCustomTimeInput = false
     @State private var customTime = 30
@@ -32,110 +34,29 @@ struct Homer: View {
             Group {
                 switch selectedTab {
                 case .metrics:
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            GeometryReader { geo in
-                                Color.clear
-                                    .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
-                            }
-                            .frame(height: 0)
-                            
-                            HeroHeader()
-                                .frame(height: 250)
-                            
-                            VStack(spacing: 20) {
-                                Text("BarRaisingFitnessApp")
-                                    .font(.largeTitle)
-                                    .bold()
-                                
-                                metricsSection
-                                
-                                Button {
-                                    withAnimation {
-                                        showTimerOptions.toggle()
-                                    }
-                                } label: {
-                                    Text("Start Workout")
-                                        .font(.headline)
-                                        .padding()
-                                        .frame(maxWidth: .infinity)
-                                        .background(Color.green.opacity(0.9))
-                                        .clipShape(RoundedRectangle(cornerRadius: 15))
-                                        .foregroundColor(.white)
-                                }
-                                .padding(.horizontal)
-                                
-                                if timer.timerRunning {
-                                    VStack(spacing: 16) {
-                                        TimerCardView(timer: timer)
-                                            .frame(width: 200, height: 200)
-                                        TimerControlButtonsView(timer: timer)
-                                    }
-                                    .id("TIMER_SECTION")
-                                }
-                                
-                                Spacer(minLength: 30)
-                            }
-                            .padding()
-                        }
-                        .onChange(of: timer.timerRunning, initial: false) { newValue, oldValue in
-                            if newValue {
-                                withAnimation(.easeInOut) {
-                                    proxy.scrollTo("TIMER_SECTION", anchor: .top)
-                                }
-                            }
-                        }
-                    }
-                    
-                
+                    metricsTabView
                 case .activity:
                     ActivityView(hideTabBar: $hideTabBar)
-
                 case .profile:
                     Profile()
-
                 case .settings:
                     SettingsView(hideTabBar: $hideTabBar)
+                case .history:
+                    StepHistoryView()
                 }
             }
             .onPreferenceChange(ScrollOffsetKey.self) { newOffset in
                 withAnimation {
                     if timer.timerRunning {
-                        // Keep tab bar visible while timer runs
                         hideTabBar = false
                     } else {
-                        // Otherwise hide when scrolled up enough
                         hideTabBar = newOffset < -50
                     }
                     offset = newOffset
                 }
             }
             .onAppear {
-                HealthKitManager.shared.requestAuthorization { success in
-                    if success {
-                        HealthKitManager.shared.fetchStepCount { steps in
-                            DispatchQueue.main.async {
-                                todaySteps = steps ?? 0
-                            }
-                        }
-                        HealthKitManager.shared.startObservingStepCountUpdates { updatedSteps in
-                            todaySteps = updatedSteps
-                        }
-                        HealthKitManager.shared.fetchDistanceWalked { distance in
-                            DispatchQueue.main.async {
-                                distanceWalked = distance ?? 0
-                            }
-                        }
-                        HealthKitManager.shared.fetchFlightsClimbed { flights in
-                            DispatchQueue.main.async {
-                                flightsClimbed = flights ?? 0
-                            }
-                        }
-                        HealthKitManager.shared.startHeartRateUpdates { bpm in
-                            currentHeartRate = bpm
-                        }
-                    }
-                }
+                handleHealthKitFetch()
             }
 
             if !hideTabBar {
@@ -154,7 +75,63 @@ struct Homer: View {
         }
     }
 
-    var metricsSection: some View {
+    private var metricsTabView: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                GeometryReader { geo in
+                    Color.clear
+                        .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
+                }
+                .frame(height: 0)
+
+                HeroHeader()
+                    .frame(height: 250)
+
+                VStack(spacing: 20) {
+                    Text("BarRaisingFitnessApp")
+                        .font(.largeTitle)
+                        .bold()
+
+                    metricsSection
+
+                    Button {
+                        withAnimation {
+                            showTimerOptions.toggle()
+                        }
+                    } label: {
+                        Text("Start Workout")
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.green.opacity(0.9))
+                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal)
+
+                    if timer.timerRunning {
+                        VStack(spacing: 16) {
+                            TimerCardView(timer: timer)
+                                .frame(width: 200, height: 200)
+                            TimerControlButtonsView(timer: timer)
+                        }
+                        .id("TIMER_SECTION")
+                    }
+
+                    Spacer(minLength: 30)
+                }
+                .padding()
+            }
+            .onChange(of: selectedTab) {
+                if selectedTab == .history {
+                    StepDataManager.shared.syncWithHealthKit()
+                    print("🔄 Syncing step history on tab change")
+                }
+            }
+        }
+    }
+
+    private var metricsSection: some View {
         VStack(spacing: 16) {
             MetricCard(title: "Steps", value: "\(Int(todaySteps))")
             MetricCard(title: "Heart Rate", value: "\(Int(currentHeartRate)) bpm")
@@ -163,7 +140,7 @@ struct Homer: View {
         }
     }
 
-    var timerOptionsSheet: some View {
+    private var timerOptionsSheet: some View {
         VStack(spacing: 15) {
             Text("Select Duration")
                 .font(.title2)
@@ -196,7 +173,7 @@ struct Homer: View {
         .padding(30)
     }
 
-    var customTimeSheet: some View {
+    private var customTimeSheet: some View {
         VStack(spacing: 20) {
             Text("Custom Duration")
                 .font(.title2)
@@ -222,7 +199,52 @@ struct Homer: View {
         }
         .padding()
     }
-}
+
+    private func handleHealthKitFetch() {
+        HealthKitManager.shared.requestAuthorization { success in
+        guard success else { return }
+
+        if appState.mode != .guest {
+            guard let startDate = Calendar.current.date(byAdding: .day, value: -30, to: Date()) else { return }
+            
+            HealthKitManager.shared.fetchHistoricalSteps(startDate: startDate) { records in
+                for record in records {
+                    StepDataManager.shared.addOrUpdateStepCount(record.stepCount, on: record.date)
+                }
+                print("✅ Historical steps synced and saved")
+            }
+        }
+        // ... (rest unchanged)
+            }
+
+            HealthKitManager.shared.fetchStepCount { steps in
+                DispatchQueue.main.async {
+                    todaySteps = steps ?? 0
+                }
+            }
+
+            HealthKitManager.shared.startObservingStepCountUpdates { updatedSteps in
+                todaySteps = updatedSteps
+            }
+
+            HealthKitManager.shared.fetchDistanceWalked { distance in
+                DispatchQueue.main.async {
+                    distanceWalked = distance ?? 0
+                }
+            }
+
+            HealthKitManager.shared.fetchFlightsClimbed { flights in
+                DispatchQueue.main.async {
+                    flightsClimbed = flights ?? 0
+                }
+            }
+
+            HealthKitManager.shared.startHeartRateUpdates { bpm in
+                currentHeartRate = bpm
+            }
+        }
+    }
+
 
 struct HeroHeader: View {
     var body: some View {
@@ -247,7 +269,6 @@ struct ScrollOffsetKey: PreferenceKey {
         value = nextValue()
     }
 }
-
 #Preview {
     Homer()
         .environmentObject(UserProfileViewModel())

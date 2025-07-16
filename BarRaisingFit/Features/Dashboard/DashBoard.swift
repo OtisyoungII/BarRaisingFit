@@ -38,13 +38,35 @@ struct Dashboard: View {
     }
 
     private func requestHealthData() {
+        
         HealthKitManager.shared.requestAuthorization { success in
             guard success else { return }
-
+            
             HealthKitManager.shared.fetchStepCount { value in
-                DispatchQueue.main.async { steps = value ?? 0 }
+                DispatchQueue.main.async {
+                    steps = value ?? 0
+                    StepDataManager.shared.addOrUpdateStepCount(steps, on: Date()) // ✅ Fixed
+                }
+                
             }
-
+            
+            HealthKitManager.shared.fetchDistanceWalked { value in
+                DispatchQueue.main.async { distance = value ?? 0 }
+            }
+            
+            HealthKitManager.shared.fetchFlightsClimbed { value in
+                DispatchQueue.main.async { flights = value ?? 0 }
+            }
+            
+            HealthKitManager.shared.startHeartRateUpdates { bpm in
+                heartRate = bpm
+            }
+            
+            HealthKitManager.shared.startObservingStepCountUpdates { newSteps in
+                steps = newSteps
+                StepDataManager.shared.addOrUpdateStepCount(newSteps, on: Date()) // ✅ Fixed
+            }
+        }
             HealthKitManager.shared.fetchDistanceWalked { value in
                 DispatchQueue.main.async { distance = value ?? 0 }
             }
@@ -59,10 +81,11 @@ struct Dashboard: View {
 
             HealthKitManager.shared.startObservingStepCountUpdates { newSteps in
                 steps = newSteps
+                StepDataManager.shared.addOrUpdateStepCount(newSteps, on: Date())
             }
         }
     }
-}
+
 
 #Preview {
     Dashboard()

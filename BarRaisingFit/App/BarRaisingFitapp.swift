@@ -10,15 +10,15 @@ import SwiftUI
 @main
 struct BarRaisingFitapp: App {
     @StateObject private var profileVM = UserProfileViewModel()
-    @State private var showSplash = true
     @StateObject private var authVM = AuthViewModel()
-    
+    @StateObject private var appState = AppState()
+    @State private var showSplash = true
+
     var body: some Scene {
         WindowGroup {
             if showSplash {
                 SplashScreenView()
                     .onAppear {
-                        // Delay showing the main content for 4 seconds
                         DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
                             withAnimation {
                                 showSplash = false
@@ -29,6 +29,7 @@ struct BarRaisingFitapp: App {
                 Homer()
                     .environmentObject(authVM)
                     .environmentObject(profileVM)
+                    .environmentObject(appState)
             }
         }
     }

@@ -11,10 +11,10 @@ struct GlassEffectTabBar: View {
     @Binding var selectedTab: Tab
     @Namespace private var bubbleAnimation
     @Environment(\.colorScheme) var colorScheme
-
-    private let tabs: [Tab] = [.metrics, .activity, .profile, .settings]
+    
+    private let tabs: [Tab] = [.metrics, .activity, .history, .profile, .settings]
     @State private var dragIndex: Int? = nil
-
+    
     var body: some View {
         GeometryReader { fullGeo in
             HStack(spacing: 0) {
@@ -40,7 +40,7 @@ struct GlassEffectTabBar: View {
         .frame(height: 70)
         .padding(.horizontal, 12)
     }
-
+    
     private func tabButton(for tab: Tab, at index: Int, fullGeo: GeometryProxy) -> some View {
         VStack(spacing: 4) {
             Image(systemName: iconName(for: tab))
@@ -58,7 +58,7 @@ struct GlassEffectTabBar: View {
             }
         }
     }
-
+    
     private func dragGesture(fullGeo: GeometryProxy) -> some Gesture {
         DragGesture(minimumDistance: 0)
             .onChanged { value in
@@ -75,7 +75,7 @@ struct GlassEffectTabBar: View {
                 }
             }
     }
-
+    
     // Helpers
     private func iconName(for tab: Tab) -> String {
         switch tab {
@@ -83,15 +83,17 @@ struct GlassEffectTabBar: View {
         case .activity: return "flame.fill"
         case .profile: return "person.crop.circle"
         case .settings: return "gearshape.fill"
+        case .history: return "clock.arrow.circlepath" // ⏱ or use "clock"
         }
     }
-
+    
     private func labelName(for tab: Tab) -> String {
         switch tab {
         case .metrics: return "Metrics"
         case .activity: return "Activity"
         case .profile: return "Profile"
         case .settings: return "Settings"
+        case .history: return "History"
         }
     }
 }

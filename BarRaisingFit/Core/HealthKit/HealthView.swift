@@ -24,6 +24,16 @@ struct HealthView: View {
                         MetricCard(title: "Distance (m)", value: String(format: "%.1f", distance))
                         MetricCard(title: "Flights Climbed", value: "\(Int(flightsClimbed))")
                         MetricCard(title: "Heart Rate (BPM)", value: String(format: "%.0f", heartRate))
+
+                        NavigationLink(destination: StepHistoryView()) {
+                            Text("View Step History")
+                                .font(.headline)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.blue.opacity(0.2))
+                                .cornerRadius(10)
+                        }
+                        .padding(.top)
                     }
                     .padding()
                 } else {
@@ -35,6 +45,7 @@ struct HealthView: View {
                                     fetchAllMetrics()
                                     startHeartRateUpdates()
                                     startStepCountObserver()
+                                    StepDataManager.shared.syncWithHealthKit()
                                 }
                             }
                         }
