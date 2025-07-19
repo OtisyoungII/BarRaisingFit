@@ -11,6 +11,8 @@ struct ActivityView: View {
     @Binding var hideTabBar: Bool
     @State private var scrollOffset: CGFloat = 0
 
+    @Environment(\.scenePhase) private var scenePhase
+    
     // 🔥 Health Data States
     @State private var steps: Double?
     @State private var distance: Double?
@@ -19,59 +21,81 @@ struct ActivityView: View {
     @State private var heartRate: Double?
 
     var body: some View {
-        ScrollView {
-            // Top offset observer
-            GeometryReader { geo in
-                Color.clear
-                    .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
-            }
-            .frame(height: 0)
-
-            VStack(spacing: 20) {
-                Text("Activity Summary")
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.top)
-
-                // 🔲 Responsive 2‑column layout
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                    MetricCard(title: "Steps", value: formatted(self.steps, isCount: true))
-                    MetricCard(title: "Distance", value: formatted(self.distance, isMiles: true))
-                    MetricCard(title: "Calories", value: formatted(self.calories, suffix: " kcal"))
-                    MetricCard(title: "Flights", value: formatted(self.flightsClimbed, isCount: true))
-                    MetricCard(title: "Heart Rate", value: formatted(self.heartRate, suffix: " bpm"))
+        NavigationStack {
+            ScrollView {
+                // Top offset observer
+                GeometryReader { geo in
+                    Color.clear
+                        .preference(key: ScrollOffsetKey.self, value: geo.frame(in: .global).minY)
                 }
-                .padding(.horizontal)
-
-                // 📡 Manual refresh
-                Button(action: fetchData) {
-                    Label("Refresh", systemImage: "arrow.clockwise")
-                        .font(.headline)
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .background(Color.blue.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                .frame(height: 0)
+                
+                VStack(spacing: 20) {
+                    // 🔲 Responsive 2‑column layout
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                        MetricCard(title: "Steps", value: formatted(self.steps, isCount: true))
+                        MetricCard(title: "Distance", value: formatted(self.distance, isMiles: true))
+                        MetricCard(title: "Calories", value: formatted(self.calories, suffix: " kcal"))
+                        MetricCard(title: "Flights", value: formatted(self.flightsClimbed, isCount: true))
+                        MetricCard(title: "Heart Rate", value: formatted(self.heartRate, suffix: " bpm"))
+                    }
+                    .padding(.horizontal)
+                    
+                    // 📡 Manual refresh
+                    Button(action: fetchData) {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                            .font(.headline)
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
+                            .background(Color.blue.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    .padding(.bottom, 20)
                 }
-                .padding(.bottom, 20)
-            }
-        }
-        .onPreferenceChange(ScrollOffsetKey.self) { offset in
-            withAnimation {
-                hideTabBar = offset < -50
-            }
-        }
-        .navigationTitle("Activity")
-        .onAppear {
-            HealthKitManager.shared.requestAuthorization { success in
-                if success {
-                    fetchData()
-                } else {
-                    print("❌ Authorization failed. Skipping data fetch.")
+                .onPreferenceChange(ScrollOffsetKey.self) { offset in
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        hideTabBar = offset < -50
+                    }
                 }
             }
         }
+        .refreshable {
+            print("🔁 >>> Refreshing data...")
+            fetchData()
+            
     }
-
+            .navigationTitle("Activity")
+            .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                HealthKitManager.shared.requestAuthorization { success in
+                    if success {
+                        fetchData()
+                        HealthKitManager.shared.startHeartRateUpdates { bpm in
+                            self.heartRate = bpm
+                            
+                        }
+                    } else {
+                        print("❌ Authorization failed. Skipping data fetch.")
+                    }
+                }
+            }
+            .onDisappear {
+                HealthKitManager.shared.stopHeartRateUpdates()
+            }
+            .onChange(of: scenePhase) { oldPhase, newPhase in
+            switch newPhase {
+            case .background, .inactive:
+                HealthKitManager.shared.stopHeartRateUpdates()
+            case .active:
+                HealthKitManager.shared.startHeartRateUpdates { bpm in
+                    self.heartRate = bpm
+                }
+            default:
+                break
+                }
+            }
+        }
+    
     // 🛠 Data formatting helper
     private func formatted(_ value: Double?, isCount: Bool = false, isMiles: Bool = false, suffix: String = "") -> String {
         guard let v = value else { return "--" }

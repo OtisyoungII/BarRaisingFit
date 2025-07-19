@@ -8,26 +8,27 @@
 import SwiftUI
 
 struct MetricCard: View {
-    let title: String
-    let value: String
-
+    var title: String
+    var value: String
+    
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 6) {
             Text(title)
                 .font(.caption)
-                .foregroundColor(.white.opacity(0.7))
-
+                .foregroundColor(.secondary)
             Text(value)
-                .font(.headline)
-                .bold()
-                .foregroundColor(.white)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
         }
-        .frame(maxWidth: .infinity)
         .padding()
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(.systemBackground))
+                .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2))
     }
 }
+
 //#Preview {
 //    MetricCard()
 //}

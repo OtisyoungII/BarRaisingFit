@@ -11,7 +11,7 @@ import HealthKit
 class HealthKitManager {
     static let shared = HealthKitManager()
     private let healthStore = HKHealthStore()
-
+    private var heartRateQuery: HKAnchoredObjectQuery?
     private init() {}
 
     private func startOfToday() -> Date {
@@ -249,13 +249,13 @@ class HealthKitManager {
             return
         }
 
-        let query = HKAnchoredObjectQuery(type: heartRateType, predicate: nil, anchor: nil, limit: HKObjectQueryNoLimit) { _, samples, _, _, _ in
+        let predicate = HKQuery.predicateForSamples(withStart: Date().addingTimeInterval(-3600), end: nil)
+
+        let query = HKAnchoredObjectQuery(type: heartRateType, predicate: predicate, anchor: nil, limit: HKObjectQueryNoLimit) { _, samples, _, _, _ in
             if let sample = samples?.last as? HKQuantitySample {
                 let bpm = sample.quantity.doubleValue(for: HKUnit(from: "count/min"))
                 DispatchQueue.main.async {
-                    print("❤️ Starting heart rate updates...")
                     updateHandler(bpm)
-                    print("❤️‍🔥 Heart rate update received: \(bpm)")
                 }
             }
         }
@@ -268,7 +268,16 @@ class HealthKitManager {
                 }
             }
         }
-
+        heartRateQuery = query
         healthStore.execute(query)
     }
-}
+    
+    func stopHeartRateUpdates() {
+        if let query = heartRateQuery {
+            healthStore.stop(query)
+            print("🛑 Stopped Heart Rate Updates")
+        }
+        heartRateQuery = nil
+    }
+    }
+

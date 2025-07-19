@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B33714BF2E2AE2FD00AEDE3E /* AsyncAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = B33714BE2E2AE2FD00AEDE3E /* AsyncAlgorithms */; };
 		B3EA368F2E22B05200168C84 /* Auth0 in Frameworks */ = {isa = PBXBuildFile; productRef = B3EA368E2E22B05200168C84 /* Auth0 */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B33714B92E2AE20D00AEDE3E /* Exceptions for "BarRaisingFitTests" folder in "BarRaisingFit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				BarRaisingFitUITests.swift,
+			);
+			target = B325A1F02D043F3E0080BDBA /* BarRaisingFit */;
+		};
+		B33714C72E2AEE8C00AEDE3E /* Exceptions for "BarRaisingFitUITests" folder in "BarRaisingFit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				HealthKitManagerTests.swift,
+			);
+			target = B325A1F02D043F3E0080BDBA /* BarRaisingFit */;
+		};
 		B38234B22E26416300085750 /* Exceptions for "BarRaisingFit" folder in "BarRaisingFit" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -54,6 +69,22 @@
 			path = BarRaisingFit;
 			sourceTree = "<group>";
 		};
+		B33714B22E2ADF7A00AEDE3E /* BarRaisingFitTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B33714B92E2AE20D00AEDE3E /* Exceptions for "BarRaisingFitTests" folder in "BarRaisingFit" target */,
+			);
+			path = BarRaisingFitTests;
+			sourceTree = "<group>";
+		};
+		B33714B62E2AE05B00AEDE3E /* BarRaisingFitUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B33714C72E2AEE8C00AEDE3E /* Exceptions for "BarRaisingFitUITests" folder in "BarRaisingFit" target */,
+			);
+			path = BarRaisingFitUITests;
+			sourceTree = "<group>";
+		};
 		B3EA36982E22B65600168C84 /* Auth0 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -70,6 +101,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3EA368F2E22B05200168C84 /* Auth0 in Frameworks */,
+				B33714BF2E2AE2FD00AEDE3E /* AsyncAlgorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +111,8 @@
 		B325A1E82D043F3E0080BDBA = {
 			isa = PBXGroup;
 			children = (
+				B33714B62E2AE05B00AEDE3E /* BarRaisingFitUITests */,
+				B33714B22E2ADF7A00AEDE3E /* BarRaisingFitTests */,
 				B325A1F32D043F3E0080BDBA /* BarRaisingFit */,
 				B3EA36982E22B65600168C84 /* Auth0 */,
 				B3EA36952E22B65500168C84 /* Frameworks */,
@@ -124,6 +158,7 @@
 			name = BarRaisingFit;
 			packageProductDependencies = (
 				B3EA368E2E22B05200168C84 /* Auth0 */,
+				B33714BE2E2AE2FD00AEDE3E /* AsyncAlgorithms */,
 			);
 			productName = BarRaisingFit;
 			productReference = B325A1F12D043F3E0080BDBA /* BarRaisingFit.app */;
@@ -155,6 +190,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B3EA368D2E22B05200168C84 /* XCRemoteSwiftPackageReference "Auth0" */,
+				B33714BD2E2AE2FD00AEDE3E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B325A1F22D043F3E0080BDBA /* Products */;
@@ -390,6 +426,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B33714BD2E2AE2FD00AEDE3E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-async-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.4;
+			};
+		};
 		B3EA368D2E22B05200168C84 /* XCRemoteSwiftPackageReference "Auth0" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/auth0/Auth0.swift";
@@ -401,6 +445,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B33714BE2E2AE2FD00AEDE3E /* AsyncAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B33714BD2E2AE2FD00AEDE3E /* XCRemoteSwiftPackageReference "swift-async-algorithms" */;
+			productName = AsyncAlgorithms;
+		};
 		B3EA368E2E22B05200168C84 /* Auth0 */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B3EA368D2E22B05200168C84 /* XCRemoteSwiftPackageReference "Auth0" */;

@@ -129,6 +129,10 @@ struct Homer: View {
                 }
             }
         }
+        .refreshable {
+            print("🔁 Pull -to-refresh triggered")
+            handleHealthKitFetch()
+        }
     }
     
     private var metricsSection: some View {
